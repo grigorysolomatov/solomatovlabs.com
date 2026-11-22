@@ -369,3 +369,18 @@ html{overflow-y:scroll}
 @media (max-width:560px){.logos{gap:24px 32px}.logos .sq{height:52px}
   .logos .rf{height:40px}.logos .nt{height:28px}.logos .dt{height:46px}
   .logos .hr{height:18px}}
+
+/* v71 zoomable compare figure (seagrass leaf): both layers share one transform */
+.compare.zf{overflow:hidden;border-radius:var(--r1);touch-action:pan-y;cursor:ew-resize}
+.compare.zf.zoomed{touch-action:none;cursor:grab}
+.compare.zf.zoomed.panning{cursor:grabbing}
+.compare.zf img{border-radius:0;transform-origin:0 0;will-change:transform}
+.compare.zf.smooth img{transition:transform .28s cubic-bezier(.22,.61,.36,1)}
+.compare.zf input{pointer-events:none}
+.zf .zb{position:absolute;right:8px;bottom:8px;display:flex;gap:4px;z-index:3}
+.zf .zb button{font:inherit;font-size:15px;line-height:1;min-width:30px;height:30px;padding:0 8px;
+  border:0;border-radius:6px;background:rgba(0,0,0,.55);color:#fff;cursor:pointer;opacity:.7;
+  transition:opacity .2s,color .2s,background .2s}
+.zf .zb button:hover,.zf .zb button:focus-visible{opacity:1;color:#ff0088;outline:none}
+.zf .zb button:disabled{opacity:.3;cursor:default;color:#fff}
+.zf .zb .zr{font-size:12px}
