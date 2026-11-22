@@ -14,7 +14,8 @@ research setups.">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<!-- v59: NTNU and DTU logos removed (their brand rules). v58: codes start with Reed&ndash;Solomon (linear-code intro dropped), shorter notes; shorter duck caption. v57: Renfert logo removed. v56: logo order NTNU, DTU, COLOR Lab, Renfert, Hraun. v55: eider video v3 (stable tracks, flying raven). v54: logo row (COLOR Lab, Renfert, NTNU, DTU, Hraun á Skaga) below the sections. v53: no PhD, DTU in AG codes. v52: Hamming codes removed (RS and AG only). v51: codes: intro first again, each code set boxed with its generator matrix, Hamming code set. v50: canonical form. v49: codes intro text below its equation. v48: gap above Hamming heading. v47: error-correcting codes without parity-check matrices. v45: phone: photo and name left-aligned, gap below header. v44: duck video first in Computer vision, labels 34 px. v43: phone: title on one line, name below photo. v42: rows animate on phones with reduce-motion on (shorter). v41: eider video with raven, male/female labels, larger labels without score. v40: Popov pivots underlined again (v36). v39: round portrait again, Consulting capitalized. v38: boxed Popov pivots. v37: square portrait. v36: 3x3 Popov matrix, pivots underlined. v35: portrait in header. v27: black sky in D65. v26: v25 plus the new slider scene from v24. v25: spectral imaging section (interactive ColorChecker spectra). v23: algorithms (Popov form) above codes (linear, Hamming, RS, Hermitian). v22: ocean optics folded into computer vision as synthetic data, no equation. v21: Algorithms, Error-correcting codes. v20: Mitsuba 3-way slider from v16, renamed categories, agent tools, tighter spacing. v19: category labels only. v17: lead sentence, mathematical modeling. v15: no section label. v14: animated expand, smoother feel. v13: collapsible areas of work. v12: before/after slider on chart photo. v11: wider chart photo, white outlines. v10: trimmed to header and visuals; to be built up again. Equations are pre-rendered with KaTeX 0.16 from
+<!-- v66: orbit scene underwater in the slider. -->
+<!-- v65: leaf scan moved to its own category, Tactile imaging. v64: leaf-scan figure full width (includes uncommitted v63 pink chart outlines). v62: seagrass trichome detection in leaf scans. v61: chart caption simpler (no drag hint, no Haifa). v60: duck caption names Hraun á Skaga, no sex labels. v59: NTNU and DTU logos removed (their brand rules). v58: codes start with Reed&ndash;Solomon (linear-code intro dropped), shorter notes; shorter duck caption. v57: Renfert logo removed. v56: logo order NTNU, DTU, COLOR Lab, Renfert, Hraun. v55: eider video v3 (stable tracks, flying raven). v54: logo row (COLOR Lab, Renfert, NTNU, DTU, Hraun á Skaga) below the sections. v53: no PhD, DTU in AG codes. v52: Hamming codes removed (RS and AG only). v51: codes: intro first again, each code set boxed with its generator matrix, Hamming code set. v50: canonical form. v49: codes intro text below its equation. v48: gap above Hamming heading. v47: error-correcting codes without parity-check matrices. v45: phone: photo and name left-aligned, gap below header. v44: duck video first in Computer vision, labels 34 px. v43: phone: title on one line, name below photo. v42: rows animate on phones with reduce-motion on (shorter). v41: eider video with raven, male/female labels, larger labels without score. v40: Popov pivots underlined again (v36). v39: round portrait again, Consulting capitalized. v38: boxed Popov pivots. v37: square portrait. v36: 3x3 Popov matrix, pivots underlined. v35: portrait in header. v27: black sky in D65. v26: v25 plus the new slider scene from v24. v25: spectral imaging section (interactive ColorChecker spectra). v23: algorithms (Popov form) above codes (linear, Hamming, RS, Hermitian). v22: ocean optics folded into computer vision as synthetic data, no equation. v21: Algorithms, Error-correcting codes. v20: Mitsuba 3-way slider from v16, renamed categories, agent tools, tighter spacing. v19: category labels only. v17: lead sentence, mathematical modeling. v15: no section label. v14: animated expand, smoother feel. v13: collapsible areas of work. v12: before/after slider on chart photo. v11: wider chart photo, white outlines. v10: trimmed to header and visuals; to be built up again. Equations are pre-rendered with KaTeX 0.16 from
      the paper's LaTeX (local CSS and fonts, no CDN). Confidential client
      work stays unnamed (see README). -->
 <a class="skip" href="#main">Skip to content</a>
@@ -50,20 +51,20 @@ research setups.">
   <figure class="wide vid">
   <video src="assets/ducks.mp4?v=55" poster="assets/ducks-poster.jpg?v=55" width="1280" height="720" muted loop playsinline controls preload="metadata" aria-label="Video of a nesting colony of eider ducks on a grassy slope; each bird is boxed and labelled by the detector and followed from frame to frame; a raven sits at the top right, then takes off"></video>
   </figure>
-  <p class="note">Eider ducks detected and tracked in a nesting colony, labelled by sex and behavior. A raven takes off at the top right.</p>
+  <p class="note">Eider ducks detected and tracked in a nesting colony at <a href="https://hraunaskaga.com/">Hraun á Skaga</a> in northern Iceland.</p>
   <h3 class="sub3">Detection in field photos</h3>
-  <figure class="wide compare" aria-label="Underwater photo; drag to compare with and without the detected charts">
+  <figure class="wide compare" aria-label="Underwater photo; slider compares it with and without the detected charts">
   <img src="assets/chart-plain.jpg?v=12" width="1200" height="960" alt="An underwater photo of a frame holding four color charts">
-  <div class="over"><img src="assets/chart-detect.jpg?v=12" width="1200" height="960" alt="The same photo with each chart and each color patch outlined in white, as found by the detector"></div>
+  <div class="over"><img src="assets/chart-detect.jpg?v=63" width="1200" height="960" alt="The same photo with each chart and each color patch outlined in pink, as found by the detector"></div>
   <span class="handle" aria-hidden="true"></span>
   <input type="range" min="0" max="100" value="50" aria-label="Compare with and without detections">
  </figure>
-  <p class="note">Drag to compare. Charts and patches found by a keypoint detector, University of Haifa. Camera spectral sensitivity: ICCP 2023, <a href="https://arxiv.org/abs/2304.11549">arXiv</a>.</p>
+  <p class="note">Color charts detected in an underwater photo. Object detection is hard underwater, because water shifts and washes out colors with distance.</p>
   <h3 class="sub3">Synthetic data</h3>
   <figure class="tri" role="group" aria-label="Rendered scene with two draggable dividers: left underwater, middle inherent radiance, right in D65 daylight">
-   <img class="l2" src="assets/tri-d65.jpg?v=27" width="1200" height="800" loading="lazy" alt="In D65 daylight: two color charts and a field of painted cubes, spheres, cylinders, cones and pyramids on sand, in their true colors in air">
-   <img class="l1" src="assets/tri-truth.jpg?v=24" width="1200" height="800" loading="lazy" alt="Inherent radiance: the same scene in the same underwater light, without water between the objects and the camera">
-   <img class="l0" src="assets/tri-underwater.jpg?v=24" width="1200" height="800" loading="lazy" alt="Underwater: a Mitsuba rendering of two ColorCheckers and dozens of painted cubes, spheres, cylinders, cones and pyramids on sand, seen through blue-green coastal water; far objects fade into the haze">
+   <img class="l2" src="assets/tri-d65.jpg?v=66" width="1200" height="800" loading="lazy" alt="In D65 daylight: a grey plinth with a ColorChecker on each face among painted cubes, spheres and cylinders on sand, in their true colors in air">
+   <img class="l1" src="assets/tri-truth.jpg?v=66" width="1200" height="800" loading="lazy" alt="Inherent radiance: the same plinth, charts and shapes in the same underwater light, without water between the objects and the camera">
+   <img class="l0" src="assets/tri-underwater.jpg?v=66" width="1200" height="800" loading="lazy" alt="Underwater: a Mitsuba rendering of a grey plinth with a ColorChecker on each face among painted cubes, spheres and cylinders on sand, seen through turbid green coastal water; far objects fade into the haze">
    <span class="lab lab0">Underwater</span><span class="lab lab1">Inherent radiance</span><span class="lab lab2">D65 daylight</span>
    <button type="button" class="div div0" role="slider" aria-label="Divider between underwater and inherent radiance" aria-valuemin="0" aria-valuemax="100"></button>
    <button type="button" class="div div1" role="slider" aria-label="Divider between inherent radiance and D65 daylight" aria-valuemin="0" aria-valuemax="100"></button>
@@ -90,6 +91,15 @@ research setups.">
    </div>
   </div>
   <p class="note">The 24 ColorChecker patches from their measured reflectance spectra (400&ndash;700 nm, 10 nm bands). Pick a patch to see its spectrum; move the slider to view the chart in a single band.</p>
+  </div>
+ </details>
+ <details class="cat">
+  <summary><span class="t">Tactile imaging</span></summary>
+  <div class="body">
+  <figure class="wide" style="margin:0">
+  <img src="assets/seagrass-trichomes.jpg?v=62" width="1200" height="675" loading="lazy" alt="Height-shaded close-up of a seagrass leaf surface near its edge, covered in small bumps; each detected trichome is circled in pink">
+  </figure>
+  <p class="note">Trichomes (tiny hairs) detected on a seagrass leaf in a tactile GelSight scan.</p>
   </div>
  </details>
 
