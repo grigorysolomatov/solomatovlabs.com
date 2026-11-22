@@ -14,6 +14,7 @@ research setups.">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<!-- v70: v69 plus the whole stitched seagrass leaf slider (v67/v68), trichomes from the tool defaults, shaded from above. -->
 <!-- v66: orbit scene underwater in the slider. -->
 <!-- v65: leaf scan moved to its own category, Tactile imaging. v64: leaf-scan figure full width (includes uncommitted v63 pink chart outlines). v62: seagrass trichome detection in leaf scans. v61: chart caption simpler (no drag hint, no Haifa). v60: duck caption names Hraun á Skaga, no sex labels. v59: NTNU and DTU logos removed (their brand rules). v58: codes start with Reed&ndash;Solomon (linear-code intro dropped), shorter notes; shorter duck caption. v57: Renfert logo removed. v56: logo order NTNU, DTU, COLOR Lab, Renfert, Hraun. v55: eider video v3 (stable tracks, flying raven). v54: logo row (COLOR Lab, Renfert, NTNU, DTU, Hraun á Skaga) below the sections. v53: no PhD, DTU in AG codes. v52: Hamming codes removed (RS and AG only). v51: codes: intro first again, each code set boxed with its generator matrix, Hamming code set. v50: canonical form. v49: codes intro text below its equation. v48: gap above Hamming heading. v47: error-correcting codes without parity-check matrices. v45: phone: photo and name left-aligned, gap below header. v44: duck video first in Computer vision, labels 34 px. v43: phone: title on one line, name below photo. v42: rows animate on phones with reduce-motion on (shorter). v41: eider video with raven, male/female labels, larger labels without score. v40: Popov pivots underlined again (v36). v39: round portrait again, Consulting capitalized. v38: boxed Popov pivots. v37: square portrait. v36: 3x3 Popov matrix, pivots underlined. v35: portrait in header. v27: black sky in D65. v26: v25 plus the new slider scene from v24. v25: spectral imaging section (interactive ColorChecker spectra). v23: algorithms (Popov form) above codes (linear, Hamming, RS, Hermitian). v22: ocean optics folded into computer vision as synthetic data, no equation. v21: Algorithms, Error-correcting codes. v20: Mitsuba 3-way slider from v16, renamed categories, agent tools, tighter spacing. v19: category labels only. v17: lead sentence, mathematical modeling. v15: no section label. v14: animated expand, smoother feel. v13: collapsible areas of work. v12: before/after slider on chart photo. v11: wider chart photo, white outlines. v10: trimmed to header and visuals; to be built up again. Equations are pre-rendered with KaTeX 0.16 from
      the paper's LaTeX (local CSS and fonts, no CDN). Confidential client
@@ -96,10 +97,13 @@ research setups.">
  <details class="cat">
   <summary><span class="t">Tactile imaging</span></summary>
   <div class="body">
-  <figure class="wide" style="margin:0">
-  <img src="assets/seagrass-trichomes.jpg?v=62" width="1200" height="675" loading="lazy" alt="Height-shaded close-up of a seagrass leaf surface near its edge, covered in small bumps; each detected trichome is circled in pink">
-  </figure>
-  <p class="note">Trichomes (tiny hairs) detected on a seagrass leaf in a tactile GelSight scan.</p>
+  <figure class="wide compare" aria-label="Seagrass leaf scan; slider compares it with and without the detected trichomes">
+  <img src="assets/seagrass-leaf-plain.jpg?v=70" width="1200" height="285" loading="lazy" alt="Height-shaded scan of a whole seagrass leaf, stitched from three tactile scans">
+  <div class="over"><img src="assets/seagrass-leaf-detected.jpg?v=70" width="1200" height="285" loading="lazy" alt="The same leaf with its borders outlined, the fitted midline drawn in white, and each detected trichome circled in pink"></div>
+  <span class="handle" aria-hidden="true"></span>
+  <input type="range" min="0" max="100" value="50" aria-label="Compare with and without detections">
+ </figure>
+  <p class="note">Trichomes (tiny hairs) detected on a whole seagrass leaf, stitched from three tactile GelSight scans.</p>
   </div>
  </details>
 
