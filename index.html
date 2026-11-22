@@ -14,7 +14,7 @@ research setups.">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<!-- v41: eider video with raven, male/female labels, larger labels without score. v40: Popov pivots underlined again (v36). v39: round portrait again, Consulting capitalized. v38: boxed Popov pivots. v37: square portrait. v36: 3x3 Popov matrix, pivots underlined. v35: portrait in header. v27: black sky in D65. v26: v25 plus the new slider scene from v24. v25: spectral imaging section (interactive ColorChecker spectra). v23: algorithms (Popov form) above codes (linear, Hamming, RS, Hermitian). v22: ocean optics folded into computer vision as synthetic data, no equation. v21: Algorithms, Error-correcting codes. v20: Mitsuba 3-way slider from v16, renamed categories, agent tools, tighter spacing. v19: category labels only. v17: lead sentence, mathematical modeling. v15: no section label. v14: animated expand, smoother feel. v13: collapsible areas of work. v12: before/after slider on chart photo. v11: wider chart photo, white outlines. v10: trimmed to header and visuals; to be built up again. Equations are pre-rendered with KaTeX 0.16 from
+<!-- v44: duck video first in Computer vision, labels 34 px. v43: phone: title on one line, name below photo. v42: rows animate on phones with reduce-motion on (shorter). v41: eider video with raven, male/female labels, larger labels without score. v40: Popov pivots underlined again (v36). v39: round portrait again, Consulting capitalized. v38: boxed Popov pivots. v37: square portrait. v36: 3x3 Popov matrix, pivots underlined. v35: portrait in header. v27: black sky in D65. v26: v25 plus the new slider scene from v24. v25: spectral imaging section (interactive ColorChecker spectra). v23: algorithms (Popov form) above codes (linear, Hamming, RS, Hermitian). v22: ocean optics folded into computer vision as synthetic data, no equation. v21: Algorithms, Error-correcting codes. v20: Mitsuba 3-way slider from v16, renamed categories, agent tools, tighter spacing. v19: category labels only. v17: lead sentence, mathematical modeling. v15: no section label. v14: animated expand, smoother feel. v13: collapsible areas of work. v12: before/after slider on chart photo. v11: wider chart photo, white outlines. v10: trimmed to header and visuals; to be built up again. Equations are pre-rendered with KaTeX 0.16 from
      the paper's LaTeX (local CSS and fonts, no CDN). Confidential client
      work stays unnamed (see README). -->
 <a class="skip" href="#main">Skip to content</a>
@@ -46,6 +46,11 @@ research setups.">
  <details class="cat">
   <summary><span class="t">Computer vision</span></summary>
   <div class="body">
+  <h3 class="sub3">Detection in field video</h3>
+  <figure class="wide vid">
+  <video src="assets/ducks.mp4?v=44" poster="assets/ducks-poster.jpg?v=44" width="1280" height="720" muted loop playsinline controls preload="metadata" aria-label="Video of a nesting colony of eider ducks on a grassy slope; each bird is boxed and labelled by the detector and followed from frame to frame; a raven sits at the top right"></video>
+  </figure>
+  <p class="note">Eider ducks in a nesting colony, found by an open-vocabulary detector and followed across frames by a tracker; each label gives the sex, read from the plumage, and the behavior (resting or walking). The small dark bird at the top right is a raven.</p>
   <h3 class="sub3">Detection in field photos</h3>
   <figure class="wide compare" aria-label="Underwater photo; drag to compare with and without the detected charts">
   <img src="assets/chart-plain.jpg?v=12" width="1200" height="960" alt="An underwater photo of a frame holding four color charts">
@@ -54,11 +59,6 @@ research setups.">
   <input type="range" min="0" max="100" value="50" aria-label="Compare with and without detections">
  </figure>
   <p class="note">Drag to compare. Charts and patches found by a keypoint detector, University of Haifa. Camera spectral sensitivity: ICCP 2023, <a href="https://arxiv.org/abs/2304.11549">arXiv</a>.</p>
-  <h3 class="sub3">Detection in field video</h3>
-  <figure class="wide vid">
-  <video src="assets/ducks.mp4?v=41" poster="assets/ducks-poster.jpg?v=41" width="1280" height="720" muted loop playsinline controls preload="metadata" aria-label="Video of a nesting colony of eider ducks on a grassy slope; each bird is boxed and labelled by the detector and followed from frame to frame; a raven sits at the top right"></video>
-  </figure>
-  <p class="note">Eider ducks in a nesting colony, found by an open-vocabulary detector and followed across frames by a tracker; each label gives the sex, read from the plumage, and the behavior (resting or walking). The small dark bird at the top right is a raven.</p>
   <h3 class="sub3">Synthetic data</h3>
   <figure class="tri" role="group" aria-label="Rendered scene with two draggable dividers: left underwater, middle inherent radiance, right in D65 daylight">
    <img class="l2" src="assets/tri-d65.jpg?v=27" width="1200" height="800" loading="lazy" alt="In D65 daylight: two color charts and a field of painted cubes, spheres, cylinders, cones and pyramids on sand, in their true colors in air">
@@ -154,7 +154,7 @@ document.querySelectorAll('.compare').forEach(f=>{const r=f.querySelector('input
 document.querySelectorAll('details.cat').forEach(d=>{
  const sum=d.querySelector('summary'),body=d.querySelector('.body');let anim=null;
  sum.addEventListener('click',e=>{
-  if(reduce)return; e.preventDefault();
+  e.preventDefault();
   const from=d.open?body.offsetHeight:0, opening=!d.open||d.classList.contains('closing');
   if(anim)anim.cancel();
   if(opening){d.open=true;d.classList.remove('closing');}
@@ -162,7 +162,7 @@ document.querySelectorAll('details.cat').forEach(d=>{
   const to=opening?body.scrollHeight:0;
   anim=body.animate([{height:from+'px',opacity:opening?(from?1:0):1},
                      {height:to+'px',opacity:opening?1:0}],
-   {duration:Math.min(650,260+Math.abs(to-from)*0.35),easing:'cubic-bezier(.22,.61,.36,1)'});
+   {duration:reduce?240:Math.min(650,260+Math.abs(to-from)*0.35),easing:'cubic-bezier(.22,.61,.36,1)'});
   anim.onfinish=()=>{anim=null;if(!opening){d.open=false;d.classList.remove('closing');}};
  });
 });})();
@@ -266,6 +266,14 @@ rng.addEventListener('input',function(){band=true;btn.classList.remove('on');pai
 btn.addEventListener('click',function(){band=false;btn.classList.add('on');paint()});
 pick(cur); paint();
 })();
+</script>
+<script>
+/* Phone: shrink the title until it fits on one line (font widths vary). */
+(()=>{const h=document.querySelector('.hero h1'),m=matchMedia('(max-width:720px)');
+const fit=()=>{h.style.fontSize='';if(!m.matches)return;
+ const w=h.parentElement.clientWidth,s=parseFloat(getComputedStyle(h).fontSize);
+ if(h.scrollWidth>w)h.style.fontSize=Math.floor(s*w/h.scrollWidth*0.98)+'px';};
+fit();addEventListener('resize',fit);document.fonts&&document.fonts.ready.then(fit);})();
 </script>
 </body>
 </html>
