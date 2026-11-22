@@ -377,10 +377,29 @@ html{overflow-y:scroll}
 .compare.zf img{border-radius:0;transform-origin:0 0;will-change:transform}
 .compare.zf.smooth img{transition:transform .28s cubic-bezier(.22,.61,.36,1)}
 .compare.zf input{pointer-events:none}
-.zf .zb{position:absolute;right:8px;bottom:8px;display:flex;gap:4px;z-index:3}
-.zf .zb button{font:inherit;font-size:15px;line-height:1;min-width:30px;height:30px;padding:0 8px;
+.zwrap{position:relative}
+.zwrap .zb{position:absolute;right:8px;bottom:8px;display:flex;gap:4px;z-index:3}
+.zwrap .zb button{font:inherit;font-size:15px;line-height:1;min-width:30px;height:30px;padding:0 8px;
   border:0;border-radius:6px;background:rgba(0,0,0,.55);color:#fff;cursor:pointer;opacity:.7;
   transition:opacity .2s,color .2s,background .2s}
-.zf .zb button:hover,.zf .zb button:focus-visible{opacity:1;color:#ff0088;outline:none}
-.zf .zb button:disabled{opacity:.3;cursor:default;color:#fff}
-.zf .zb .zr{font-size:12px}
+.zwrap .zb button:hover,.zwrap .zb button:focus-visible{opacity:1;color:#ff0088;outline:none}
+.zwrap .zb button:disabled{opacity:.3;cursor:default;color:#fff}
+.zwrap .zb .zr{font-size:12px}
+
+/* v74 leaf figure touch model: the divider moves only from its handle
+   (44 px hit strip, knob); zoom buttons below the figure on phones */
+.compare.zf .handle{width:44px;margin-left:-22px;background:none;box-shadow:none;
+  pointer-events:auto;touch-action:none;cursor:ew-resize;z-index:2}
+.compare.zf .handle::before{content:"";position:absolute;top:0;bottom:0;left:50%;width:2px;
+  margin-left:-1px;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.25)}
+.compare.zf .handle::after{content:"\2039\2009\203A";display:flex;align-items:center;
+  justify-content:center;font:600 15px/1 var(--sans);color:#333;padding-bottom:2px;
+  transition:box-shadow .2s}
+.compare.zf .handle.on::after{box-shadow:0 0 0 2px #ff0088,0 1px 4px rgba(0,0,0,.4)}
+@media (max-width:720px){
+  .zwrap .zb{position:static;justify-content:flex-end;gap:6px;margin-top:8px}
+  .zwrap .zb button{min-width:40px;height:40px;font-size:19px;padding:0 10px;
+    background:#151515;border:1px solid var(--line-2);opacity:.9}
+  .zwrap .zb .zr{font-size:13px}
+}
+@media (hover:none){.zwrap .zb button:hover:not(:focus-visible){color:#fff}}

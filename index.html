@@ -14,6 +14,7 @@ research setups.">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<!-- v74: phone touch on the leaf figure: the divider moves only from its handle, one finger pans when zoomed, two fingers pinch; zoom buttons below the figure on phones. -->
 <!-- v73: v71 plus the seagrass leaf without the stem line (detected images re-rendered). -->
 <!-- v71: v70 plus zoom and pan on the seagrass leaf slider (4800 px pair loaded on first zoom). -->
 <!-- v70: v69 plus the whole stitched seagrass leaf slider (v67/v68), trichomes from the tool defaults, shaded from above. -->
@@ -99,13 +100,15 @@ research setups.">
  <details class="cat">
   <summary><span class="t">Tactile imaging</span></summary>
   <div class="body">
+  <div class="zwrap">
   <figure class="wide compare zf" aria-label="Seagrass leaf scan; slider compares it with and without the detected trichomes">
   <img src="assets/seagrass-leaf-plain.jpg?v=71" data-hi="assets/seagrass-leaf-plain-4800.jpg?v=71" width="1200" height="285" loading="lazy" alt="Height-shaded scan of a whole seagrass leaf, stitched from three tactile scans">
   <div class="over"><img src="assets/seagrass-leaf-detected.jpg?v=73" data-hi="assets/seagrass-leaf-detected-4800.jpg?v=73" width="1200" height="285" loading="lazy" alt="The same leaf with its borders outlined and each detected trichome circled in pink"></div>
   <span class="handle" aria-hidden="true"></span>
   <input type="range" min="0" max="100" value="50" aria-label="Compare with and without detections">
-  <div class="zb"><button type="button" aria-label="Zoom in">+</button><button type="button" aria-label="Zoom out">&minus;</button><button type="button" class="zr" aria-label="Reset zoom">reset</button></div>
   </figure>
+  <div class="zb"><button type="button" aria-label="Zoom in">+</button><button type="button" aria-label="Zoom out">&minus;</button><button type="button" class="zr" aria-label="Reset zoom">reset</button></div>
+  </div>
   <p class="note">Trichomes (tiny hairs) detected on a whole seagrass leaf, stitched from three tactile GelSight scans.</p>
   </div>
  </details>
@@ -284,18 +287,21 @@ const fit=()=>{h.style.fontSize='';if(!m.matches)return;
 fit();addEventListener('resize',fit);document.fonts&&document.fonts.ready.then(fit);})();
 </script>
 <script>
-/* Zoom + pan for the seagrass compare figure: one shared transform for both layers. */
+/* Zoom + pan for the seagrass compare figure: one shared transform for both layers.
+   Touch: the divider moves only from its handle; one finger pans when zoomed
+   (the page scrolls at 1x); two fingers pinch. Mouse: at 1x a drag or click
+   moves the divider, when zoomed a drag pans; wheel and double-click zoom. */
 (()=>{const f=document.querySelector('.compare.zf');if(!f)return;
-const imgs=[...f.querySelectorAll('img')],inp=f.querySelector('input'),
- [bin,bout,brst]=f.querySelectorAll('.zb button'),MAX=8;
+const w=f.parentElement,imgs=[...f.querySelectorAll('img')],inp=f.querySelector('input'),
+ hd=f.querySelector('.handle'),[bin,bout,brst]=w.querySelectorAll('.zb button'),MAX=8;
 let s=1,tx=0,ty=0,hi=false,smoothT=0;
-const R=()=>f.getBoundingClientRect();
+const R=()=>f.getBoundingClientRect(),Z=()=>s>1.001;
 function clamp(){const r=R();tx=Math.min(0,Math.max(r.width-r.width*s,tx));ty=Math.min(0,Math.max(r.height-r.height*s,ty));}
 function apply(smooth){
  if(smooth){f.classList.add('smooth');clearTimeout(smoothT);smoothT=setTimeout(()=>f.classList.remove('smooth'),320);}
  clamp();const t=s===1?'':`translate(${tx}px,${ty}px) scale(${s})`;
  imgs.forEach(i=>i.style.transform=t);
- f.classList.toggle('zoomed',s>1.001);bin.disabled=s>=MAX-.001;bout.disabled=s<=1.001;brst.disabled=s<=1.001;
+ f.classList.toggle('zoomed',Z());bin.disabled=s>=MAX-.001;bout.disabled=!Z();brst.disabled=!Z();
  if(s>1&&!hi)load();}
 function load(){hi=true;imgs.forEach(i=>{const u=i.dataset.hi;if(!u)return;const n=new Image();n.src=u;
  n.decode().then(()=>{i.src=u;}).catch(()=>{});});}
@@ -307,46 +313,54 @@ const divX=()=>R().width*inp.value/100;
 bin.onclick=()=>{const r=R();zoomAt(1.6,r.width/2,r.height/2,true);};
 bout.onclick=()=>{const r=R();zoomAt(1/1.6,r.width/2,r.height/2,true);};
 brst.onclick=()=>{s=1;tx=ty=0;apply(true);};
-f.querySelector('.zb').addEventListener('pointerdown',e=>e.stopPropagation());
 f.addEventListener('wheel',e=>{e.preventDefault();const[x,y]=rel(e);
  const d=e.deltaMode===1?e.deltaY*16:e.deltaY;zoomAt(Math.exp(-d*(e.ctrlKey?.01:.0022)),x,y,false);},{passive:false});
-const P=new Map();let mode=null,pinch=null,down=null,lastTap=null,tapT=0;
-f.addEventListener('pointerdown',e=>{if(e.button>0)return;
- P.set(e.pointerId,{x:e.clientX,y:e.clientY});f.setPointerCapture(e.pointerId);
- if(P.size===2){mode='pinch';cancelTap();const[a,b]=[...P.values()];
-  pinch={d:Math.hypot(a.x-b.x,a.y-b.y)||1};return;}
- const[x,y,r]=rel(e);down={x:e.clientX,y:e.clientY,t:performance.now(),moved:false};
- if(Math.abs(x-divX())<26){mode='slide';setSlide(x,r.width);}
- else mode=s>1.001?'pan':'tap';
- if(mode==='pan')f.classList.add('panning');});
+/* divider handle: captured drag that never pans or zooms */
+let hid=null;
+hd.addEventListener('pointerdown',e=>{if(e.button>0||hid!==null)return;e.stopPropagation();e.preventDefault();
+ hid=e.pointerId;hd.setPointerCapture(e.pointerId);hd.classList.add('on');});
+hd.addEventListener('pointermove',e=>{if(e.pointerId!==hid)return;e.stopPropagation();
+ const[x,,r]=rel(e);setSlide(x,r.width);});
+const hend=e=>{if(e.pointerId!==hid)return;e.stopPropagation();hid=null;hd.classList.remove('on');};
+hd.addEventListener('pointerup',hend);hd.addEventListener('pointercancel',hend);
+hd.addEventListener('dblclick',e=>e.stopPropagation());
+/* image area */
+const P=new Map();let mode=null,pinch=null,down=null,tapT=0,lastType='mouse';
+f.addEventListener('pointerdown',e=>{if(e.button>0)return;lastType=e.pointerType;
+ const touch=e.pointerType!=='mouse';
+ P.set(e.pointerId,{x:e.clientX,y:e.clientY});
+ if(P.size>=2){if(!touch)return;mode='pinch';down=null;clearTimeout(tapT);
+  for(const id of P.keys())try{f.setPointerCapture(id);}catch(_){}
+  const[a,b]=[...P.values()];pinch={d:Math.hypot(a.x-b.x,a.y-b.y)||1};return;}
+ down={x:e.clientX,y:e.clientY,moved:false};
+ if(Z()){mode='pan';f.setPointerCapture(e.pointerId);f.classList.add('panning');return;}
+ if(touch){mode=null;return;}            // 1x touch: leave it to the page scroll
+ f.setPointerCapture(e.pointerId);
+ const[x,,r]=rel(e);mode=Math.abs(x-divX())<26?'slide':'tap';if(mode==='slide')setSlide(x,r.width);});
 f.addEventListener('pointermove',e=>{const p=P.get(e.pointerId);if(!p)return;
  const px=p.x,py=p.y;p.x=e.clientX;p.y=e.clientY;
- if(mode==='pinch'&&P.size>=2){const[a,b]=[...P.values()],d=Math.hypot(a.x-b.x,a.y-b.y)||1,r=R();
+ if(mode==='pinch'){if(P.size<2)return;const[a,b]=[...P.values()],d=Math.hypot(a.x-b.x,a.y-b.y)||1,r=R();
   const mx=(a.x+b.x)/2-r.left,my=(a.y+b.y)/2-r.top;
-  const pmx=mx-((e.clientX-px)/2),pmy=my-((e.clientY-py)/2);
-  tx+=mx-pmx;ty+=my-pmy;zoomAt(d/pinch.d,mx,my,false);pinch.d=d;return;}
- if(!down)return;const[x,,r]=rel(e);
+  tx+=(e.clientX-px)/2;ty+=(e.clientY-py)/2;zoomAt(d/pinch.d,mx,my,false);pinch.d=d;return;}
+ if(!down)return;
  if(!down.moved&&Math.hypot(e.clientX-down.x,e.clientY-down.y)>5){down.moved=true;
-  if(mode==='tap'){cancelTap();
-   if(e.pointerType==='touch'&&Math.abs(e.clientY-down.y)>Math.abs(e.clientX-down.x)){mode=null;down=null;return;}
-   mode='slide';}}
- if(mode==='slide')setSlide(x,r.width);
+  if(mode==='tap'){clearTimeout(tapT);mode='slide';}}
+ if(mode==='slide'){const[x,,r]=rel(e);setSlide(x,r.width);}
  else if(mode==='pan'){tx+=e.clientX-px;ty+=e.clientY-py;apply(false);}});
-function cancelTap(){clearTimeout(tapT);lastTap=null;}
 function end(e){if(!P.has(e.pointerId))return;P.delete(e.pointerId);
- f.classList.remove('panning');
- if(mode==='pinch'){if(P.size<2){mode=null;pinch=null;down=null;}return;}
- const d=down;down=null;const m=mode;mode=null;
- if(!d||d.moved||e.type==='pointercancel'||(m!=='tap'&&m!=='pan'))return;
- if(performance.now()-d.t>350)return;
- const[x,y,r]=rel(e);
- if(lastTap&&Math.hypot(e.clientX-lastTap.x,e.clientY-lastTap.y)<40){cancelTap();
-  if(s>1.001){s=1;tx=ty=0;apply(true);}else zoomAt(4,x,y,true);return;}
- lastTap={x:e.clientX,y:e.clientY};clearTimeout(tapT);
- tapT=setTimeout(()=>{lastTap=null;if(s<=1.001)setSlide(x,r.width);},300);}
+ if(mode==='pinch'){if(P.size>=2)return;pinch=null;
+  if(P.size===1&&Z()){mode='pan';down={moved:true};f.classList.add('panning');}
+  else{mode=null;down=null;f.classList.remove('panning');}return;}
+ if(P.size)return;
+ f.classList.remove('panning');const d=down,m=mode;down=null;mode=null;
+ if(m!=='tap'||!d||d.moved||e.type==='pointercancel')return;
+ const[x,,r]=rel(e);clearTimeout(tapT);   // mouse click at 1x: move the divider unless a double-click follows
+ tapT=setTimeout(()=>{if(!Z())setSlide(x,r.width);},250);}
 f.addEventListener('pointerup',end);f.addEventListener('pointercancel',end);
+f.addEventListener('dblclick',e=>{if(lastType!=='mouse')return;clearTimeout(tapT);const[x,y]=rel(e);
+ if(Z()){s=1;tx=ty=0;apply(true);}else zoomAt(4,x,y,true);});
 f.addEventListener('touchstart',e=>{if(e.touches.length>1)e.preventDefault();},{passive:false});
-f.addEventListener('touchmove',e=>{if(e.touches.length>1||s>1.001)e.preventDefault();},{passive:false});
+f.addEventListener('touchmove',e=>{if(e.touches.length>1||Z())e.preventDefault();},{passive:false});
 f.addEventListener('dragstart',e=>e.preventDefault());
 addEventListener('resize',()=>apply(false));
 })();
