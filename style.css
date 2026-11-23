@@ -403,3 +403,10 @@ html{overflow-y:scroll}
   .zwrap .zb .zr{font-size:13px}
 }
 @media (hover:none){.zwrap .zb button:hover:not(:focus-visible){color:#fff}}
+
+/* v75: contact email */
+.hero .mail{margin:18px 0 0;font-size:16px}
+.hero .mail a{color:var(--fg);text-decoration:none;border-bottom:1px solid var(--accent);padding-bottom:1px}
+.hero .mail a:hover{color:var(--accent)}
+.foot a{color:var(--muted);text-decoration:none}
+.foot a:hover{color:var(--accent)}
