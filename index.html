@@ -24,6 +24,7 @@ research setups.">
 <!-- v73: v71 plus the seagrass leaf without the stem line (detected images re-rendered). -->
 <!-- v71: v70 plus zoom and pan on the seagrass leaf slider (4800 px pair loaded on first zoom). -->
 <!-- v70: v69 plus the whole stitched seagrass leaf slider (v67/v68), trichomes from the tool defaults, shaded from above. -->
+<!-- v86: orbit plays on phones with reduce-motion on; tap starts it if autoplay is blocked. -->
 <!-- v85: eider video v4 (male label fixed, no boxes on posts, far drakes boxed). -->
 <!-- v84: Michmoret orbit at half speed, 96 rendered frames (8 s per orbit). -->
 <!-- v83: eider video starts playing (muted) when Computer vision is opened, pauses when closed. -->
@@ -413,7 +414,9 @@ document.querySelector('.cform').addEventListener('submit',async e=>{e.preventDe
   var vs = document.querySelectorAll('.tri video'); if (!vs.length) return;
   var m = vs[vs.length - 1], FR = 1 / 12, still = matchMedia('(prefers-reduced-motion:reduce)').matches;
   vs = [].slice.call(vs);
-  if (still) { vs.forEach(function (v) { v.removeAttribute('autoplay'); v.pause(); }); return; }
+  // v86: the orbit is slow (8 s per lap), so it plays even with reduce-motion on;
+  // if the browser blocks autoplay (e.g. power saving), a tap starts it.
+  m.parentNode.addEventListener('click', function () { if (m.paused) vs.forEach(function (v) { v.play().catch(function(){}); }); });
   function sync() { vs.forEach(function (v) {
     if (v !== m && Math.abs(v.currentTime - m.currentTime) > FR) v.currentTime = m.currentTime;
     if (v !== m && v.paused !== m.paused) { m.paused ? v.pause() : v.play().catch(function(){}); } }); }
