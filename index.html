@@ -11,10 +11,10 @@ research setups.">
 <meta name="theme-color" content="#000000">
 <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/katex/katex.min.css">
-<link rel="stylesheet" href="style.css?v=80">
+<link rel="stylesheet" href="style.css?v=81">
 </head>
 <body>
-<!-- v80 (preview only, not published): contact form live via the Apps Script web app. -->
+<!-- v81: v80 plus the Mitsuba slider as three synchronized orbit videos (Michmoret water). -->
 <!-- v79 (preview only, not published): email address pink without underline (Contact section and footer). -->
 <!-- v78 (preview only, not published): email shown again (assembled by JavaScript) in the Contact section and footer, above the form; form wired to an Apps Script endpoint. -->
 <!-- v77 (preview only, not published): header "Get in touch" link removed; the contact form at the bottom is the only contact. -->
@@ -72,9 +72,9 @@ research setups.">
   <p class="note">Color charts detected in an underwater photo. Object detection is hard underwater, because water shifts and washes out colors with distance.</p>
   <h3 class="sub3">Synthetic data</h3>
   <figure class="tri" role="group" aria-label="Rendered scene with two draggable dividers: left underwater, middle inherent radiance, right in D65 daylight">
-   <img class="l2" src="assets/tri-d65.jpg?v=69" width="1200" height="800" loading="lazy" alt="In D65 daylight: a grey plinth with a ColorChecker on each face among painted cubes, spheres and cylinders on sand, in their true colors in air">
-   <img class="l1" src="assets/tri-truth.jpg?v=69" width="1200" height="800" loading="lazy" alt="Inherent radiance: the same plinth, charts and shapes in the same underwater light, without water between the objects and the camera">
-   <img class="l0" src="assets/tri-underwater.jpg?v=69" width="1200" height="800" loading="lazy" alt="Underwater: a Mitsuba rendering of a grey plinth with a ColorChecker on each face among painted cubes, spheres and cylinders on sand, seen through turbid green coastal water; far objects fade into the haze">
+   <video class="l2" data-k="D" src="assets/mich-D.mp4?v=81" poster="assets/mich-D-poster.jpg?v=81" width="600" height="400" muted loop playsinline autoplay preload="auto" disablepictureinpicture aria-label="Michmoret water, camera orbiting"></video>
+   <video class="l1" data-k="L" src="assets/mich-L.mp4?v=81" poster="assets/mich-L-poster.jpg?v=81" width="600" height="400" muted loop playsinline autoplay preload="auto" disablepictureinpicture aria-label="Michmoret water, camera orbiting"></video>
+   <video class="l0" data-k="F" src="assets/mich-F.mp4?v=81" poster="assets/mich-F-poster.jpg?v=81" width="600" height="400" muted loop playsinline autoplay preload="auto" disablepictureinpicture aria-label="Michmoret water, camera orbiting"></video>
    <span class="lab lab0">Underwater</span><span class="lab lab1">Inherent radiance</span><span class="lab lab2">D65 daylight</span>
    <button type="button" class="div div0" role="slider" aria-label="Divider between underwater and inherent radiance" aria-valuemin="0" aria-valuemax="100"></button>
    <button type="button" class="div div1" role="slider" aria-label="Divider between inherent radiance and D65 daylight" aria-valuemin="0" aria-valuemax="100"></button>
@@ -402,6 +402,92 @@ document.querySelector('.cform').addEventListener('submit',async e=>{e.preventDe
   else throw 0;
  }catch(_){st.textContent='Sending failed. Please write to the address above.';}
  b.disabled=false;});
+</script>
+<script>
+// Orbit videos: .l0 (underwater) is the master; the others follow it.
+(function () {
+  var vs = document.querySelectorAll('.tri video'); if (!vs.length) return;
+  var m = vs[vs.length - 1], FR = 1 / 12, still = matchMedia('(prefers-reduced-motion:reduce)').matches;
+  vs = [].slice.call(vs);
+  if (still) { vs.forEach(function (v) { v.removeAttribute('autoplay'); v.pause(); }); return; }
+  function sync() { vs.forEach(function (v) {
+    if (v !== m && Math.abs(v.currentTime - m.currentTime) > FR) v.currentTime = m.currentTime;
+    if (v !== m && v.paused !== m.paused) { m.paused ? v.pause() : v.play().catch(function(){}); } }); }
+  setInterval(sync, 250);
+  m.addEventListener('seeked', sync); m.addEventListener('play', sync);
+  vs.forEach(function (v) { v.play().catch(function(){}); });
+  var io = 'IntersectionObserver' in window && new IntersectionObserver(function (es) {
+    es.forEach(function (e) { vs.forEach(function (v) { e.isIntersecting ? v.play().catch(function(){}) : v.pause(); }); }); });
+  if (io) io.observe(m.parentNode);
+})();
+// Three-way comparison: two dividers that cannot cross (min gap 2 %).
+document.querySelectorAll('.tri').forEach(function (f) {
+  var hs = f.querySelectorAll('.div'), labs = f.querySelectorAll('.lab');
+  var v = [100 / 3, 200 / 3], GAP = 2, drag = -1;
+  function set(i, x) {
+    x = i === 0 ? Math.max(0, Math.min(x, v[1] - GAP))
+                : Math.min(100, Math.max(x, v[0] + GAP));
+    v[i] = x;
+    f.style.setProperty('--a', v[0] + '%');
+    f.style.setProperty('--b', v[1] + '%');
+    hs[i].setAttribute('aria-valuenow', Math.round(x));
+    var w = f.clientWidth, e = [0, v[0], v[1], 100];
+    labs.forEach(function (l, k) {   // hide a label when its region is too narrow
+      l.style.opacity = (e[k + 1] - e[k]) * w / 100 > l.offsetWidth + 8 ? '' : '0';
+    });
+  }
+  function pos(ev) {
+    var r = f.getBoundingClientRect();
+    return (ev.clientX - r.left) / r.width * 100;
+  }
+  var x0 = 0, pend = false;   // pend: press near both dividers, pick by first move
+  f.addEventListener('pointerdown', function (ev) {
+    if (ev.button > 0) return;
+    var x = pos(ev), k = ev.target.closest('.div'), px = 100 / f.clientWidth;
+    if (!k && ev.pointerType === 'touch') { drag = -1; return; }  // let the page scroll
+    pend = Math.abs(x - v[0]) < 20 * px && Math.abs(x - v[1]) < 20 * px;
+    drag = k ? (k === hs[0] ? 0 : 1)
+             : (Math.abs(x - v[0]) <= Math.abs(x - v[1]) ? 0 : 1);
+    x0 = x;
+    f.setPointerCapture(ev.pointerId);
+    hs[drag].classList.add('on');
+    if (!pend) set(drag, x);
+    ev.preventDefault();
+  });
+  f.addEventListener('pointermove', function (ev) {
+    if (drag < 0) return;
+    var x = pos(ev);
+    if (pend) {
+      if (Math.abs(x - x0) * f.clientWidth / 100 < 3) return;
+      hs[drag].classList.remove('on');
+      drag = x < x0 ? 0 : 1; pend = false;
+      hs[drag].classList.add('on');
+    }
+    set(drag, x);
+  });
+  function end() {
+    if (drag >= 0) hs[drag].classList.remove('on');
+    drag = -1;
+  }
+  f.addEventListener('pointerup', end);
+  f.addEventListener('pointercancel', end);
+  hs.forEach(function (h, i) {
+    h.addEventListener('keydown', function (ev) {
+      var d = {ArrowLeft: -2, ArrowDown: -2, ArrowRight: 2, ArrowUp: 2,
+               PageDown: -10, PageUp: 10}[ev.key];
+      if (ev.key === 'Home') d = -100;
+      if (ev.key === 'End') d = 100;
+      if (d === undefined) return;
+      set(i, v[i] + d);
+      ev.preventDefault();
+    });
+  });
+  set(0, v[0]); set(1, v[1]);
+  window.addEventListener('resize', function () { set(0, v[0]); set(1, v[1]); });
+  // labels inside a closed <details> have no width yet: refresh when shown
+  var d = f.closest('details');
+  if (d) d.addEventListener('toggle', function () { set(0, v[0]); set(1, v[1]); });
+});
 </script>
 </body>
 </html>

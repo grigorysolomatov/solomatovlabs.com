@@ -245,8 +245,9 @@ img{transition:opacity .5s ease}
 .tri{position:relative;margin:0 0 12px;--a:33.333%;--b:66.667%;aspect-ratio:3/2;
   overflow:hidden;border-radius:var(--r1);user-select:none;-webkit-user-select:none;
   touch-action:pan-y;cursor:ew-resize;background:#111}
-.tri img{position:absolute;inset:0;width:100%;height:100%;display:block;
+.tri img,.tri video{position:absolute;inset:0;width:100%;height:100%;display:block;
   pointer-events:none;-webkit-user-drag:none}
+.tri video{object-fit:cover}
 .tri .l1{clip-path:inset(0 calc(100% - var(--b)) 0 0)}
 .tri .l0{clip-path:inset(0 calc(100% - var(--a)) 0 0)}
 .tri .lab{position:absolute;top:8px;padding:2px 7px;font:12px/1.4 var(--sans);
