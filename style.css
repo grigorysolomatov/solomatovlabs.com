@@ -438,3 +438,7 @@ html{overflow-y:scroll}
 /* v79: email pink, no underline */
 a.em,.contact .cmail a.em,.foot a.em{color:var(--accent);text-decoration:none;border-bottom:0;padding-bottom:0}
 a.em:hover,.contact .cmail a.em:hover,.foot a.em:hover{color:var(--fg)}
+
+/* Agentic tools diagram (v87) */
+.agdiag{margin:18px auto 4px;max-width:520px}
+.agdiag svg{display:block}
