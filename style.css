@@ -410,3 +410,30 @@ html{overflow-y:scroll}
 .hero .mail a:hover{color:var(--accent)}
 .foot a{color:var(--muted);text-decoration:none}
 .foot a:hover{color:var(--accent)}
+
+/* v76: contact form */
+.contact{padding:8px 0 48px}
+.cform{display:grid;gap:16px;max-width:640px}
+.cform .row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.cform label{display:grid;gap:6px;font-size:13px;color:var(--muted)}
+.cform input,.cform textarea{font:inherit;font-size:16px;color:var(--fg);background:transparent;
+  border:1px solid var(--line-2);border-radius:var(--r1);padding:10px 12px;transition:border-color .2s}
+.cform textarea{resize:vertical;min-height:120px}
+.cform input:focus,.cform textarea:focus{outline:none;border-color:var(--accent)}
+.cform .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.cform .send{display:flex;align-items:center;gap:16px}
+.cform button{font:inherit;font-size:15px;color:var(--fg);background:transparent;cursor:pointer;
+  border:1px solid var(--accent);border-radius:var(--r1);padding:9px 22px;transition:background .2s}
+.cform button:hover{background:var(--accent)}
+.cform .status{font-size:14px;color:var(--fg-2)}
+@media (max-width:560px){.cform .row{grid-template-columns:1fr}}
+
+/* v78: email in the Contact section */
+.contact .cmail{margin:0 0 20px;font-size:16px;color:var(--fg-2)}
+.contact .cmail a{color:var(--fg);text-decoration:none;border-bottom:1px solid var(--accent);padding-bottom:1px}
+.contact .cmail a:hover{color:var(--accent)}
+.cform button:disabled{opacity:.5;cursor:default}
+
+/* v79: email pink, no underline */
+a.em,.contact .cmail a.em,.foot a.em{color:var(--accent);text-decoration:none;border-bottom:0;padding-bottom:0}
+a.em:hover,.contact .cmail a.em:hover,.foot a.em:hover{color:var(--fg)}

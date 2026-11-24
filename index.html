@@ -14,7 +14,12 @@ research setups.">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<!-- v75: contact email (contact@solomatovlabs.com) under the header paragraph and in the footer. -->
+<!-- v80 (preview only, not published): contact form live via the Apps Script web app. -->
+<!-- v79 (preview only, not published): email address pink without underline (Contact section and footer). -->
+<!-- v78 (preview only, not published): email shown again (assembled by JavaScript) in the Contact section and footer, above the form; form wired to an Apps Script endpoint. -->
+<!-- v77 (preview only, not published): header "Get in touch" link removed; the contact form at the bottom is the only contact. -->
+<!-- v76 (preview only, not published): contact form instead of a visible email address; header link scrolls to it. Form has no backend yet. -->
+<!-- v75: contact email under the header paragraph and in the footer. -->
 <!-- v74: phone touch on the leaf figure: the divider moves only from its handle, one finger pans when zoomed, two fingers pinch; zoom buttons below the figure on phones. -->
 <!-- v73: v71 plus the seagrass leaf without the stem line (detected images re-rendered). -->
 <!-- v71: v70 plus zoom and pan on the seagrass leaf slider (4800 px pair loaded on first zoom). -->
@@ -40,7 +45,6 @@ research setups.">
  <h1>Research and Consulting</h1>
  <p class="lead">Mathematical modeling, computer science and
   agentic tools to turn your ideas into working software.</p>
- <p class="mail"><a href="mailto:contact@solomatovlabs.com">contact@solomatovlabs.com</a></p>
  </div>
  <figure class="me">
   <img src="assets/portrait.jpg" width="490" height="588"
@@ -147,6 +151,19 @@ M347 1759 V0 H263 V1759 v1200 v1759 h84z"/></svg></span></span></span><span clas
   </div>
  </details>
 </section>
+<section class="contact" id="contact" aria-label="Contact">
+ <h2>Contact</h2>
+ <p class="cmail">Write to <a class="em" href="#contact">contact (at) solomatovlabs.com</a> or use the form.</p>
+ <form class="cform" action="#" method="post" novalidate>
+  <div class="row">
+   <label>Name<input name="name" autocomplete="name" required></label>
+   <label>Email<input name="email" type="email" autocomplete="email" required></label>
+  </div>
+  <label>Message<textarea name="message" rows="5" required></textarea></label>
+  <label class="hp" aria-hidden="true">Leave empty<input name="website" tabindex="-1" autocomplete="off"></label>
+  <div class="send"><button type="submit">Send</button><span class="status" role="status"></span></div>
+ </form>
+</section>
 <section class="logos" aria-label="Worked with">
  <a href="https://marsci.haifa.ac.il/en/marine-technologies-labs/" aria-label="COLOR Lab, University of Haifa"><img src="assets/logos/colorlab.png" width="240" height="240" alt="COLOR Lab" class="sq"></a>
  <a href="https://hraunaskaga.com/" aria-label="Hraun á Skaga"><img src="assets/logos/hraun-a-skaga.svg" width="271" height="38" alt="Hraun á Skaga" class="hr"></a>
@@ -155,7 +172,7 @@ M347 1759 V0 H263 V1759 v1200 v1759 h84z"/></svg></span></span></span><span clas
 
 <footer class="foot">
  <span><b>Solomatov Labs</b> · Oslo, Norway</span>
- <a href="mailto:contact@solomatovlabs.com">contact@solomatovlabs.com</a>
+ <a class="em" href="#contact">contact (at) solomatovlabs.com</a>
  <span>© 2026</span>
 </footer>
 <script>
@@ -367,6 +384,24 @@ f.addEventListener('touchmove',e=>{if(e.touches.length>1||Z())e.preventDefault()
 f.addEventListener('dragstart',e=>e.preventDefault());
 addEventListener('resize',()=>apply(false));
 })();
+</script>
+<script>
+// Address assembled at runtime so simple scrapers miss it in the source.
+(()=>{const a=['contact','solomatovlabs.com'].join('@');
+ document.querySelectorAll('.em').forEach(e=>{e.textContent=a;e.href='mailto:'+a;});})();
+// Contact form -> Google Apps Script web app (mails it to the contact address).
+const FORM_ENDPOINT='https://script.google.com/macros/s/AKfycbwD3iHQlSoQaMhCB2tOMBTTUBZ1pm3UTb_SHFwXNwvc4bcHQxYqfabpIqx2spMUCb6v6g/exec';
+document.querySelector('.cform').addEventListener('submit',async e=>{e.preventDefault();
+ const f=e.target,st=f.querySelector('.status'),b=f.querySelector('button');
+ if(!f.checkValidity()){st.textContent='Please fill in all fields.';return;}
+ if(!FORM_ENDPOINT){st.textContent='Preview only: nothing was sent.';return;}
+ b.disabled=true;st.textContent='Sending…';
+ try{const r=await fetch(FORM_ENDPOINT,{method:'POST',redirect:'follow',body:new URLSearchParams(new FormData(f))});
+  const j=await r.json();
+  if(j.ok){f.reset();st.textContent='Thank you, your message was sent.';}
+  else throw 0;
+ }catch(_){st.textContent='Sending failed. Please write to the address above.';}
+ b.disabled=false;});
 </script>
 </body>
 </html>
