@@ -24,6 +24,7 @@ research setups.">
 <!-- v73: v71 plus the seagrass leaf without the stem line (detected images re-rendered). -->
 <!-- v71: v70 plus zoom and pan on the seagrass leaf slider (4800 px pair loaded on first zoom). -->
 <!-- v70: v69 plus the whole stitched seagrass leaf slider (v67/v68), trichomes from the tool defaults, shaded from above. -->
+<!-- v83: eider video starts playing (muted) when Computer vision is opened, pauses when closed. -->
 <!-- v82: eider video moved to the bottom of Computer vision (underwater first). -->
 <!-- v66: orbit scene underwater in the slider. -->
 <!-- v65: leaf scan moved to its own category, Tactile imaging. v64: leaf-scan figure full width (includes uncommitted v63 pink chart outlines). v62: seagrass trichome detection in leaf scans. v61: chart caption simpler (no drag hint, no Haifa). v60: duck caption names Hraun á Skaga, no sex labels. v59: NTNU and DTU logos removed (their brand rules). v58: codes start with Reed&ndash;Solomon (linear-code intro dropped), shorter notes; shorter duck caption. v57: Renfert logo removed. v56: logo order NTNU, DTU, COLOR Lab, Renfert, Hraun. v55: eider video v3 (stable tracks, flying raven). v54: logo row (COLOR Lab, Renfert, NTNU, DTU, Hraun á Skaga) below the sections. v53: no PhD, DTU in AG codes. v52: Hamming codes removed (RS and AG only). v51: codes: intro first again, each code set boxed with its generator matrix, Hamming code set. v50: canonical form. v49: codes intro text below its equation. v48: gap above Hamming heading. v47: error-correcting codes without parity-check matrices. v45: phone: photo and name left-aligned, gap below header. v44: duck video first in Computer vision, labels 34 px. v43: phone: title on one line, name below photo. v42: rows animate on phones with reduce-motion on (shorter). v41: eider video with raven, male/female labels, larger labels without score. v40: Popov pivots underlined again (v36). v39: round portrait again, Consulting capitalized. v38: boxed Popov pivots. v37: square portrait. v36: 3x3 Popov matrix, pivots underlined. v35: portrait in header. v27: black sky in D65. v26: v25 plus the new slider scene from v24. v25: spectral imaging section (interactive ColorChecker spectra). v23: algorithms (Popov form) above codes (linear, Hamming, RS, Hermitian). v22: ocean optics folded into computer vision as synthetic data, no equation. v21: Algorithms, Error-correcting codes. v20: Mitsuba 3-way slider from v16, renamed categories, agent tools, tighter spacing. v19: category labels only. v17: lead sentence, mathematical modeling. v15: no section label. v14: animated expand, smoother feel. v13: collapsible areas of work. v12: before/after slider on chart photo. v11: wider chart photo, white outlines. v10: trimmed to header and visuals; to be built up again. Equations are pre-rendered with KaTeX 0.16 from
@@ -78,7 +79,7 @@ research setups.">
   <p class="note">Physically based spectral renderings in Mitsuba: the underwater view, its inherent radiance (no water between objects and camera), and the scene in D65 daylight. Drag the two dividers.</p>
   <h3 class="sub3">Detection in field video</h3>
   <figure class="wide vid">
-  <video src="assets/ducks.mp4?v=55" poster="assets/ducks-poster.jpg?v=55" width="1280" height="720" muted loop playsinline controls preload="metadata" aria-label="Video of a nesting colony of eider ducks on a grassy slope; each bird is boxed and labelled by the detector and followed from frame to frame; a raven sits at the top right, then takes off"></video>
+  <video id="ducks" src="assets/ducks.mp4?v=55" poster="assets/ducks-poster.jpg?v=55" width="1280" height="720" muted loop playsinline controls preload="metadata" aria-label="Video of a nesting colony of eider ducks on a grassy slope; each bird is boxed and labelled by the detector and followed from frame to frame; a raven sits at the top right, then takes off"></video>
   </figure>
   <p class="note">Eider ducks detected and tracked in a nesting colony at <a href="https://hraunaskaga.com/">Hraun á Skaga</a> in northern Iceland.</p>
   </div>
@@ -489,6 +490,17 @@ document.querySelectorAll('.tri').forEach(function (f) {
   var d = f.closest('details');
   if (d) d.addEventListener('toggle', function () { set(0, v[0]); set(1, v[1]); });
 });
+</script>
+<script>
+(function () {
+  var v = document.getElementById("ducks"); if (!v) return;
+  var d = v.closest("details"); if (!d) return;
+  v.preload = "auto";
+  d.addEventListener("toggle", function () {
+    if (d.open) { v.muted = true; var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+    else v.pause();
+  });
+})();
 </script>
 </body>
 </html>
